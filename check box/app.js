@@ -1,7 +1,20 @@
-const PositiveMessage = () => <p>Możesz kupić bilet i obejrzeć film.</p>;
-const NegativeMessage = () => (
-  <p>Nie możesz obejrzeć filmu, jeśli masz mniej niż 16 lat.</p>
-);
+const ValidationMessage = props => <p>{props.txt}</p>;
+
+const PurchaseForm = props => {
+  return (
+    <form onSubmit={props.submit}>
+      <input
+        type="checkbox"
+        id="age"
+        onChange={props.change}
+        checked={props.checked}
+      />
+      <label htmlFor="age">Mam co najmniej 16 lat.</label>
+      <br />
+      <button type="submit">Kup bilet</button>
+    </form>
+  );
+};
 
 class TicketShop extends React.Component {
   state = {
@@ -27,9 +40,11 @@ class TicketShop extends React.Component {
   displayMessage = () => {
     if (this.state.isFormSubmitted) {
       if (this.state.isConfirmed) {
-        return <PositiveMessage />;
+        return <ValidationMessage txt="Możesz kupić bilet i obejrzeć film." />;
       } else {
-        return <NegativeMessage />;
+        return (
+          <ValidationMessage txt="Nie możesz obejrzeć filmu, jeśli masz mniej niż 16 lat." />
+        );
       }
     } else {
       return null;
@@ -37,20 +52,16 @@ class TicketShop extends React.Component {
   };
 
   render() {
+    const { isConfirmed, isFormSubmitted } = this.state;
+
     return (
       <React.Fragment>
         <h1> Kup bilet na najnowszy horror! </h1>
-        <form onSubmit={this.handleSubmit}>
-          <input
-            type="checkbox"
-            id="age"
-            onChange={this.handleCheckboxChange}
-            checked={this.state.isConfirmed}
-          />
-          <label htmlFor="age">Mam co najmniej 16 lat.</label>
-          <br />
-          <button type="submit">Kup bilet</button>
-        </form>
+        <PurchaseForm
+          change={this.handleCheckboxChange}
+          submit={this.handleSubmit}
+          checked={isConfirmed}
+        />
         {this.displayMessage()}
       </React.Fragment>
     );
